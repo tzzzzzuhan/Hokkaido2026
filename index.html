@@ -2,7 +2,6 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<!-- 專為 iPhone 最佳化的 Viewport：防止輸入框自動放大、支援安全區域 (瀏海/動態島) -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>北海道六日行</title>
 <style>
@@ -31,7 +30,6 @@ body{
   font-family:'Noto Sans TC', sans-serif;
   -webkit-font-smoothing:antialiased;
   line-height:1.55;
-  /* 適應 iPhone 底部安全區域 */
   padding-bottom: env(safe-area-inset-bottom);
 }
 h1,h2,h3,.display{
@@ -141,24 +139,25 @@ svg.rail{display:block; min-width:640px;}
 }
 .item:last-child{border-bottom:none;}
 .cat-icon{
-  width:30px; height:30px; border-radius:9px; flex-shrink:0;
+  width:30px; height:30px; border-radius:9px; flex-shrink:0; margin-top:2px;
   display:flex; align-items:center; justify-content:center;
   color:#fff;
 }
 .item-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;}
-.item-row1{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+.item-row1{display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap;}
 input.time-input{
   font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
-  border:none; background:var(--surface-soft); border-radius:6px; padding:4px 6px; width:66px; flex-shrink:0;
+  border:none; background:var(--surface-soft); border-radius:6px; padding:4px 6px; width:66px; flex-shrink:0; margin-top:2px;
 }
-input.place-input{
-  flex:1; min-width:80px; border:none; background:transparent; font-size:15px; font-weight:500;
-  color:var(--ink); border-bottom:1px dashed transparent; text-overflow: ellipsis;
+/* 改為 textarea 以支援自動換行 */
+textarea.place-input{
+  flex:1; min-width:110px; border:none; background:transparent; font-size:15px; font-weight:500;
+  color:var(--ink); border-bottom:1px dashed transparent; resize:none; overflow:hidden; line-height:1.4; padding:2px 0;
 }
-input.place-input:hover, input.place-input:focus{border-bottom-color:var(--border);}
+textarea.place-input:hover, textarea.place-input:focus{border-bottom-color:var(--border);}
 
 textarea.note-input{
-  width:100%; border:none; background:transparent; resize:none; font-size:13.5px; color:var(--ink-soft);
+  width:100%; border:none; background:transparent; resize:none; overflow:hidden; font-size:13.5px; color:var(--ink-soft);
   font-family:'Noto Sans TC',sans-serif; padding:0; line-height:1.4;
 }
 input.map-input{
@@ -173,10 +172,10 @@ input.map-input:hover, input.map-input:focus{border-bottom-color:var(--border);}
 .map-row { display:flex; align-items:center; gap:6px; width:100%; }
 
 select.cat-select{
-  border:none; background:var(--surface-soft); border-radius:6px; font-size:12px; padding:4px 6px; color:var(--ink-soft); flex-shrink:0;
+  border:none; background:var(--surface-soft); border-radius:6px; font-size:12px; padding:4px 6px; color:var(--ink-soft); flex-shrink:0; margin-top:2px;
 }
 .item-del{
-  border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; font-size:15px; padding:2px 6px; flex-shrink:0;
+  border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; font-size:15px; padding:2px 6px; flex-shrink:0; margin-top:2px;
 }
 .item-del:hover{opacity:1; color:var(--rail);}
 .add-item-btn, .add-row-btn{
@@ -307,7 +306,6 @@ footer.note{
   text-align:center; font-size:12px; color:var(--ink-soft); margin-top:24px; padding:0 10px; line-height:1.5;
 }
 
-/* 📱 手機版微調 (Max-width: 480px) */
 @media (max-width:480px){
   .app { padding: 12px 10px 80px; }
   .hero { padding: 20px 16px 16px; border-radius: 16px; }
@@ -612,6 +610,7 @@ footer.note{
     ]
   ];
 
+  // 更新：寫入使用者指定的完整行李清單
   function getInitPackingList() {
     return [
       {
@@ -620,14 +619,44 @@ footer.note{
           { label: '護照', checks: { zhima: false, awei: false } },
           { label: '現金', checks: { zhima: false, awei: false } },
           { label: '多張不同銀行信用卡', checks: { zhima: false, awei: false } },
-          { label: '金融卡可以提款日幣', checks: { zhima: false, awei: false } }
+          { label: '金融卡可以提款日幣', checks: { zhima: false, awei: false } },
+          { label: '海外旅行保險', checks: { zhima: false, awei: false } },
+          { label: '護照影印件', checks: { zhima: false, awei: false } },
+          { label: '護照備用照片', checks: { zhima: false, awei: false } }
         ]
       },
       {
         category: '👕 衣服保養類',
         items: [
           { label: '替換的服裝一套', checks: { zhima: false, awei: false } },
-          { label: '洗面用品', checks: { zhima: false, awei: false } }
+          { label: '內衣內褲', checks: { zhima: false, awei: false } },
+          { label: '襪子', checks: { zhima: false, awei: false } },
+          { label: '洗髮護髮液', checks: { zhima: false, awei: false } },
+          { label: '洗面用品', checks: { zhima: false, awei: false } },
+          { label: 'Cimor', checks: { zhima: false, awei: false } }
+        ]
+      },
+      {
+        category: '🧴 生活用品類',
+        items: [
+          { label: '口罩', checks: { zhima: false, awei: false } },
+          { label: '紙巾', checks: { zhima: false, awei: false } },
+          { label: '消毒濕紙巾', checks: { zhima: false, awei: false } },
+          { label: '常備藥', checks: { zhima: false, awei: false } },
+          { label: '酒精', checks: { zhima: false, awei: false } },
+          { label: '壓縮袋', checks: { zhima: false, awei: false } }
+        ]
+      },
+      {
+        category: '📱 3C類',
+        items: [
+          { label: '手機充電器', checks: { zhima: false, awei: false } },
+          { label: '手錶充電器', checks: { zhima: false, awei: false } },
+          { label: '行動電源', checks: { zhima: false, awei: false } },
+          { label: 'SIM卡', checks: { zhima: false, awei: false } },
+          { label: '相機', checks: { zhima: false, awei: false } },
+          { label: '底片相機', checks: { zhima: false, awei: false } },
+          { label: '記憶卡', checks: { zhima: false, awei: false } }
         ]
       }
     ];
@@ -640,7 +669,9 @@ footer.note{
   var selectedDay = 0;
   var selectedCity = 'hakodate'; 
   var weatherCache = {};
-  var STORAGE_KEY = 'hokkaido-trip-data-v7'; // 升級版本號以防萬一
+  
+  // 升級版本號 v8，確保載入新版完整行李清單
+  var STORAGE_KEY = 'hokkaido-trip-data-v8'; 
 
   function defaultState(){
     return {
@@ -684,25 +715,17 @@ footer.note{
         return parsed;
       }
 
-      // 無痛升級：從 V5 或 V6 轉移過來
-      var oldRes = localStorage.getItem('hokkaido-trip-data-v6') || localStorage.getItem('hokkaido-trip-data-v5');
+      // 無痛升級：繼承之前的記帳與購物資料，但強制覆蓋「最新版行李清單」給使用者
+      var oldRes = localStorage.getItem('hokkaido-trip-data-v7') || localStorage.getItem('hokkaido-trip-data-v6') || localStorage.getItem('hokkaido-trip-data-v5');
       if(oldRes) {
         var oldState = JSON.parse(oldRes);
+        // 強制更新行李清單為使用者最新指定的 26 項物品
+        oldState.packingList = getInitPackingList();
         
-        // 替換 Day 4
-        oldState.days[3].title = DAY_THEMES[3].title;
-        oldState.days[3].theme = DAY_THEMES[3].theme;
-        oldState.days[3].items = DEFAULT_ITEMS[3].map(function(it, j){ return Object.assign({id:'d3-i'+j}, it); });
-        
-        // 替換 Day 5
-        oldState.days[4].title = DAY_THEMES[4].title;
-        oldState.days[4].theme = DAY_THEMES[4].theme;
-        oldState.days[4].items = DEFAULT_ITEMS[4].map(function(it, j){ return Object.assign({id:'d4-i'+j}, it); });
-        
+        // 防呆保護舊資料缺少 shoppingList 的狀況
         if(!oldState.shoppingList) {
           oldState.shoppingList = [ { title: '藥妝店必買', items: [] }, { title: '伴手禮與零食', items: [] } ];
         }
-        
         return oldState;
       }
     }catch(e){ console.error('Load Error:', e); }
@@ -744,6 +767,13 @@ footer.note{
             Math.sin(dLon/2) * Math.sin(dLon/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
+  }
+
+  /* ---------------- JS Auto-resize Textarea ---------------- */
+  // 用來讓行程輸入框自動長高換行的精靈函數
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
   }
 
   /* ---------------- Rendering: Rail ---------------- */
@@ -794,7 +824,8 @@ footer.note{
       
       html += '<div class="item-row1">';
       html += '<input class="time-input" data-field="time" data-idx="'+idx+'" value="'+esc(item.time)+'">';
-      html += '<input class="place-input" data-field="place" data-idx="'+idx+'" value="'+esc(item.place)+'" placeholder="要做什麼／去哪裡">';
+      // 這裡改用 textarea 讓字太多可以自動換行
+      html += '<textarea class="place-input" data-field="place" data-idx="'+idx+'" rows="1" placeholder="要做什麼／去哪裡">'+esc(item.place)+'</textarea>';
       html += '<select class="cat-select" data-field="cat" data-idx="'+idx+'">';
       Object.keys(CATS).forEach(function(k){
         html += '<option value="'+k+'" '+(k===item.cat?'selected':'')+'>'+CATS[k].icon+' '+CATS[k].label+'</option>';
@@ -819,6 +850,12 @@ footer.note{
     html += '<button class="add-item-btn" id="addItemBtn">＋ 新增這天的行程項目</button>';
     html += '</div>';
     el.innerHTML = html;
+
+    // 啟動自動換行長高魔法
+    el.querySelectorAll('textarea.place-input, textarea.note-input').forEach(function(ta){
+      autoGrow(ta);
+      ta.addEventListener('input', function(){ autoGrow(ta); });
+    });
 
     document.getElementById('dayTitleInput').addEventListener('input', function(e){
       day.title = e.target.value; saveState(); renderRail();
@@ -917,7 +954,7 @@ footer.note{
       html += '<tbody>';
       cat.items.forEach(function(item, iIdx){
         html += '<tr>';
-        html += '<td>' + esc(item.label) + ' <button class="pack-del-btn" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" title="刪除">✕</button></td>';
+        html += '<td>' + esc(item.label) + ' <button class="pack-del-btn" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" title="刪除此物品">✕</button></td>';
         html += '<td class="center"><label class="chk-wrap"><input type="checkbox" class="pack-chk" data-person="zhima" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" '+(item.checks.zhima?'checked':'')+'></label></td>';
         html += '<td class="center"><label class="chk-wrap"><input type="checkbox" class="pack-chk" data-person="awei" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" '+(item.checks.awei?'checked':'')+'></label></td>';
         html += '</tr>';
@@ -1488,7 +1525,6 @@ footer.note{
   function autoSelectDay() {
     if (!state.startDate) return;
     var start = new Date(state.startDate + 'T00:00:00');
-    // 計算台灣/日本時間基準的差距，直接取設備當地日期
     var today = new Date();
     today.setHours(0,0,0,0);
     var diff = Math.round((today - start) / 86400000);

@@ -2,7 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 專為 iPhone 最佳化的 Viewport：防止輸入框自動放大、支援安全區域 (瀏海/動態島) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>北海道六日行</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
@@ -30,6 +31,8 @@ body{
   font-family:'Noto Sans TC', sans-serif;
   -webkit-font-smoothing:antialiased;
   line-height:1.55;
+  /* 適應 iPhone 底部安全區域 */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 h1,h2,h3,.display{
   font-family:'Shippori Mincho', serif;
@@ -40,7 +43,7 @@ a{color:inherit;}
 button{font-family:inherit;}
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 
-.app{max-width:880px;margin:0 auto;padding:20px 16px 64px;}
+.app{max-width:880px;margin:0 auto;padding:20px 16px 80px;}
 
 /* ---------- Header / hero ---------- */
 .hero{
@@ -62,10 +65,10 @@ button{font-family:inherit;}
   font-size:12px; letter-spacing:.18em; text-transform:uppercase;
   color:#C9D6E4; margin:0 0 6px;
 }
-.hero h1{font-size:28px; margin:0; color:#fff;}
-.hero-sub{font-size:13px; color:#CBD8E6; margin-top:6px;}
+.hero h1{font-size:28px; margin:0; color:#fff; word-break: break-word;}
+.hero-sub{font-size:13px; color:#CBD8E6; margin-top:6px; line-height:1.4;}
 .hero-meta{
-  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:4px;
 }
 .date-field{
   background:rgba(255,255,255,.1);
@@ -77,13 +80,13 @@ button{font-family:inherit;}
 .date-field label{font-size:10px; color:#C9D6E4; letter-spacing:.06em;}
 .date-field input{
   background:transparent; border:none; color:#fff; font-family:'JetBrains Mono',monospace;
-  font-size:13px; width:120px;
+  font-size:14px; width:120px;
 }
 .date-field input::-webkit-calendar-picker-indicator{filter:invert(1); opacity:.8;}
 
 /* rail line */
 .railwrap{margin-top:22px; position:relative; z-index:1;}
-.rail-scroll{overflow-x:auto; padding-bottom:4px;}
+.rail-scroll{overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch;}
 .rail-scroll::-webkit-scrollbar{height:6px;}
 .rail-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25); border-radius:3px;}
 svg.rail{display:block; min-width:640px;}
@@ -100,9 +103,10 @@ svg.rail{display:block; min-width:640px;}
   background:var(--surface-soft); border:1px solid var(--border);
   border-radius:14px; padding:5px;
   overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
 }
 .tab{
-  flex:1; min-width:60px; text-align:center; padding:10px 8px; border:none; background:transparent;
+  flex:1; min-width:54px; text-align:center; padding:10px 6px; border:none; background:transparent;
   border-radius:10px; color:var(--ink-soft); font-size:14px; font-weight:500; cursor:pointer;
   transition:background .15s ease, color .15s ease; white-space:nowrap;
 }
@@ -111,10 +115,6 @@ svg.rail{display:block; min-width:640px;}
 .panel{display:none;}
 .panel.active{display:block; animation:fadein .25s ease;}
 @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
-@media (prefers-reduced-motion:reduce){
-  .panel.active{animation:none;}
-  .station circle{transition:none;}
-}
 
 /* ---------- Cards ---------- */
 .card{
@@ -123,10 +123,10 @@ svg.rail{display:block; min-width:640px;}
 }
 .card-head{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;}
 .card-head h2{font-size:19px; margin:0; color:var(--primary-dark);}
-.eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 2px;}
+.eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 2px; line-height:1.4;}
 
 /* ---------- Itinerary ---------- */
-.day-heading{display:flex; align-items:baseline; gap:10px; margin-bottom:4px;}
+.day-heading{display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap;}
 .day-heading .num{font-family:'JetBrains Mono',monospace; color:var(--rail); font-weight:600; font-size:15px;}
 .day-heading .date{font-size:12px; color:var(--ink-soft);}
 .day-title-input{
@@ -137,7 +137,7 @@ svg.rail{display:block; min-width:640px;}
 
 .item{
   display:flex; gap:10px; align-items:flex-start;
-  padding:10px 4px; border-bottom:1px solid var(--border);
+  padding:10px 0; border-bottom:1px solid var(--border);
 }
 .item:last-child{border-bottom:none;}
 .cat-icon{
@@ -145,56 +145,55 @@ svg.rail{display:block; min-width:640px;}
   display:flex; align-items:center; justify-content:center;
   color:#fff;
 }
-.item-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;}
+.item-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;}
 .item-row1{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-.item time-input{width:64px;}
 input.time-input{
-  font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);
-  border:none; background:var(--surface-soft); border-radius:6px; padding:3px 6px; width:62px;
+  font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
+  border:none; background:var(--surface-soft); border-radius:6px; padding:4px 6px; width:66px; flex-shrink:0;
 }
 input.place-input{
-  flex:1; min-width:110px; border:none; background:transparent; font-size:14.5px; font-weight:500;
-  color:var(--ink); border-bottom:1px dashed transparent;
+  flex:1; min-width:80px; border:none; background:transparent; font-size:15px; font-weight:500;
+  color:var(--ink); border-bottom:1px dashed transparent; text-overflow: ellipsis;
 }
 input.place-input:hover, input.place-input:focus{border-bottom-color:var(--border);}
 
 textarea.note-input{
-  width:100%; border:none; background:transparent; resize:none; font-size:12.5px; color:var(--ink-soft);
-  font-family:'Noto Sans TC',sans-serif; padding:0;
+  width:100%; border:none; background:transparent; resize:none; font-size:13.5px; color:var(--ink-soft);
+  font-family:'Noto Sans TC',sans-serif; padding:0; line-height:1.4;
 }
 input.map-input{
-  flex:1; border:none; background:transparent; font-size:12px; color:var(--primary);
+  flex:1; border:none; background:transparent; font-size:13px; color:var(--primary); min-width:0;
   font-family:'Noto Sans TC',sans-serif; padding:0; border-bottom:1px dashed transparent;
 }
 input.map-input:hover, input.map-input:focus{border-bottom-color:var(--border);}
 .map-link-btn {
   font-size: 11.5px; text-decoration: none; color: #fff; background: var(--primary);
-  padding: 2px 8px; border-radius: 4px; white-space: nowrap; transition: background .15s;
+  padding: 4px 8px; border-radius: 6px; white-space: nowrap; transition: background .15s; flex-shrink:0;
 }
-.map-link-btn:hover { background: var(--primary-dark); }
 .map-row { display:flex; align-items:center; gap:6px; width:100%; }
 
 select.cat-select{
-  border:none; background:var(--surface-soft); border-radius:6px; font-size:11px; padding:3px 6px; color:var(--ink-soft);
+  border:none; background:var(--surface-soft); border-radius:6px; font-size:12px; padding:4px 6px; color:var(--ink-soft); flex-shrink:0;
 }
 .item-del{
-  border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; font-size:15px; padding:2px 6px;
+  border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; font-size:15px; padding:2px 6px; flex-shrink:0;
 }
 .item-del:hover{opacity:1; color:var(--rail);}
 .add-item-btn, .add-row-btn{
   border:1px dashed var(--border); background:none; color:var(--ink-soft);
-  border-radius:10px; padding:8px 14px; font-size:13px; cursor:pointer; width:100%; margin-top:8px;
+  border-radius:10px; padding:10px 14px; font-size:14px; cursor:pointer; width:100%; margin-top:8px;
 }
 .add-item-btn:hover, .add-row-btn:hover{border-color:var(--primary); color:var(--primary);}
 
 /* ---------- Packing ---------- */
-.packing-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-.packing-table th, .packing-table td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom:4px; }
+.packing-table { width: 100%; border-collapse: collapse; margin-top: 4px; min-width:320px; }
+.packing-table th, .packing-table td { padding: 12px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14.5px; }
 .packing-table th { color: var(--ink-soft); font-weight: 500; font-size: 13px; border-bottom-width: 2px; }
 .packing-table th.center, .packing-table td.center { text-align: center; }
 .chk-wrap { display: flex; align-items: center; justify-content: center; cursor: pointer; margin: 0; }
-.chk-wrap input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); margin: 0; }
-.pack-del-btn { border:none; background:none; opacity:0.3; cursor:pointer; float:right; font-size:13px; }
+.chk-wrap input { width: 22px; height: 22px; cursor: pointer; accent-color: var(--primary); margin: 0; }
+.pack-del-btn { border:none; background:none; opacity:0.3; cursor:pointer; float:right; font-size:13px; padding:4px; }
 .pack-del-btn:hover { color:var(--rail); opacity:1; }
 
 /* ---------- Expenses ---------- */
@@ -202,123 +201,123 @@ select.cat-select{
 .stat{
   background:var(--surface-soft); border-radius:12px; padding:12px 14px;
 }
-.stat .label{font-size:11px; color:var(--ink-soft); letter-spacing:.06em;}
-.stat .value{font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:600; color:var(--primary-dark); margin-top:2px;}
+.stat .label{font-size:12px; color:var(--ink-soft); letter-spacing:.06em;}
+.stat .value{font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600; color:var(--primary-dark); margin-top:2px; line-height:1.2;}
 .settle-list{margin-top:10px;}
 .settle-row{
-  display:flex; align-items:center; gap:8px; padding:9px 12px; background:#FBF3EC;
-  border:1px solid #F0DCC9; border-radius:10px; margin-bottom:8px; font-size:13.5px;
+  display:flex; align-items:center; gap:8px; padding:10px 12px; background:#FBF3EC;
+  border:1px solid #F0DCC9; border-radius:10px; margin-bottom:8px; font-size:14px; flex-wrap:wrap;
 }
 .settle-row .amt{margin-left:auto; font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--rail);}
-.settle-clear{color:var(--green); font-size:13.5px; padding:9px 12px;}
+.settle-clear{color:var(--green); font-size:14px; padding:10px 12px;}
 
 .expense-form{
   display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px;
 }
 .expense-form input, .expense-form select{
-  border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13.5px;
-  background:var(--surface); font-family:inherit; width:100%;
+  border:1px solid var(--border); border-radius:8px; padding:10px; font-size:15px;
+  background:var(--surface); font-family:inherit; width:100%; box-sizing:border-box;
 }
 .expense-form .full{grid-column:1/-1;}
-.split-row{grid-column:1/-1; display:flex; gap:10px; align-items:center; font-size:13px; color:var(--ink-soft); flex-wrap:wrap;}
+.split-row{grid-column:1/-1; display:flex; gap:10px; align-items:center; font-size:14px; color:var(--ink-soft); flex-wrap:wrap;}
 .split-row label{display:flex; align-items:center; gap:5px; cursor:pointer;}
+.split-row input[type="checkbox"] { width:18px; height:18px; accent-color:var(--primary); }
 .btn-primary{
-  grid-column:1/-1; background:var(--primary); color:#fff; border:none; border-radius:9px;
-  padding:10px; font-size:14px; font-weight:500; cursor:pointer; margin-top:2px;
+  grid-column:1/-1; background:var(--primary); color:#fff; border:none; border-radius:10px;
+  padding:12px; font-size:15px; font-weight:500; cursor:pointer; margin-top:2px;
 }
-.btn-primary:hover{background:var(--primary-dark);}
 
 .expense-list{margin-top:14px;}
 .expense-row{
-  display:flex; align-items:center; gap:10px; padding:10px 2px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--border);
 }
 .expense-row:last-child{border-bottom:none;}
-.expense-cat-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+.expense-cat-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
 .expense-main{flex:1; min-width:0;}
-.expense-title{font-size:14px; font-weight:500;}
-.expense-sub{font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
-.expense-amt{font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; text-align:right;}
-.expense-del{border:none; background:none; color:var(--ink-soft); opacity:.35; cursor:pointer; font-size:14px;}
-.expense-del:hover{opacity:1; color:var(--rail);}
-.empty-note{color:var(--ink-soft); font-size:13px; padding:14px 4px; text-align:center;}
+.expense-title{font-size:15px; font-weight:500; word-break:break-word; line-height:1.3;}
+.expense-sub{font-size:12px; color:var(--ink-soft); margin-top:2px; line-height:1.3;}
+.expense-amt{font-family:'JetBrains Mono',monospace; font-weight:600; font-size:15px; text-align:right; flex-shrink:0;}
+.expense-del{border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; font-size:16px; padding:6px; flex-shrink:0;}
 
 /* member chips */
-.member-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;}
+.member-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
 .member-chip{
   display:flex; align-items:center; gap:6px; background:var(--surface-soft);
-  border-radius:20px; padding:5px 6px 5px 12px;
+  border-radius:20px; padding:6px 8px 6px 14px;
 }
-.member-chip input{border:none; background:transparent; font-size:13px; font-weight:500; width:76px; color:var(--ink);}
-.member-chip .swatch{width:9px; height:9px; border-radius:50%;}
+.member-chip input{border:none; background:transparent; font-size:14px; font-weight:500; width:70px; color:var(--ink);}
+.member-chip .swatch{width:10px; height:10px; border-radius:50%;}
 .member-del{border:none; background:none; color:var(--ink-soft); opacity:.4; cursor:pointer; padding:2px 6px; border-radius:50%;}
-.member-del:hover{opacity:1;}
-.add-member{
-  border:1px dashed var(--border); background:none; border-radius:20px; padding:6px 14px; font-size:12.5px; color:var(--ink-soft); cursor:pointer;
-}
 
 /* ---------- Weather ---------- */
-.city-tabs{display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:12px;}
+.city-tabs{display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:12px; -webkit-overflow-scrolling:touch;}
 .city-tab{
   flex-shrink:0; border:1px solid var(--border); background:var(--surface); border-radius:20px;
-  padding:6px 14px; font-size:13px; cursor:pointer; color:var(--ink-soft);
+  padding:8px 16px; font-size:14px; cursor:pointer; color:var(--ink-soft);
 }
 .city-tab.active{background:var(--primary); color:#fff; border-color:var(--primary);}
 .weather-live{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
 .weather-temp{font-family:'JetBrains Mono',monospace; font-size:42px; font-weight:600; color:var(--primary-dark);}
 .weather-desc{font-size:14px; color:var(--ink-soft);}
 .weather-icon{font-size:38px; line-height:1;}
-.forecast-strip{display:flex; gap:8px; overflow-x:auto; margin-top:14px;}
+.forecast-strip{display:flex; gap:8px; overflow-x:auto; margin-top:14px; -webkit-overflow-scrolling:touch;}
 .fday{
-  flex-shrink:0; width:78px; text-align:center; background:var(--surface-soft); border-radius:10px; padding:10px 4px;
+  flex-shrink:0; width:80px; text-align:center; background:var(--surface-soft); border-radius:10px; padding:12px 4px;
 }
-.fday .d{font-size:11px; color:var(--ink-soft);}
-.fday .ic{font-size:20px; margin:4px 0;}
-.fday .t{font-family:'JetBrains Mono',monospace; font-size:12px;}
+.fday .d{font-size:12px; color:var(--ink-soft);}
+.fday .ic{font-size:22px; margin:4px 0;}
+.fday .t{font-family:'JetBrains Mono',monospace; font-size:13px;}
 .fday .t .hi{color:var(--ink);}
 .fday .t .lo{color:var(--ink-soft);}
-.weather-status{font-size:12.5px; color:var(--ink-soft); margin-top:10px;}
+.weather-status{font-size:12.5px; color:var(--ink-soft); margin-top:10px; line-height:1.4;}
 .climate-ref{
-  display:grid; grid-template-columns:repeat(2,1fr); gap:10px; font-size:13px; margin-top:6px;
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; font-size:13.5px; margin-top:6px;
 }
-.climate-ref div{background:var(--surface-soft); border-radius:10px; padding:10px 12px;}
-.climate-ref .k{font-size:11px; color:var(--ink-soft);}
-.climate-ref .v{font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--primary-dark); margin-top:2px;}
-.tips-list{margin:0; padding-left:18px; font-size:13.5px;}
-.tips-list li{margin-bottom:6px;}
+.climate-ref div{background:var(--surface-soft); border-radius:10px; padding:12px;}
+.climate-ref .k{font-size:12px; color:var(--ink-soft); line-height:1.3;}
+.climate-ref .v{font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--primary-dark); margin-top:2px; font-size:14px;}
+.tips-list{margin:0; padding-left:20px; font-size:14.5px; line-height:1.5;}
+.tips-list li{margin-bottom:8px;}
 
 /* ---------- Nearby / GPS ---------- */
-.nearby-item { display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--surface-soft); border-radius:10px; margin-bottom:8px; }
-.nearby-info h3 { margin:0 0 4px; font-size:15px; color:var(--ink); font-family:'Noto Sans TC', sans-serif;}
-.nearby-info p { margin:0; font-size:12px; color:var(--ink-soft); }
-.nearby-dist { font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:600; color:var(--primary); }
+.nearby-item { display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--surface-soft); border-radius:12px; margin-bottom:10px; gap:10px;}
+.nearby-info { flex:1; min-width:0; }
+.nearby-info h3 { margin:0 0 4px; font-size:16px; color:var(--ink); font-family:'Noto Sans TC', sans-serif; word-break:break-word;}
+.nearby-info p { margin:0; font-size:13px; color:var(--ink-soft); line-height:1.3; }
+.nearby-dist { font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:600; color:var(--primary); text-align:right;}
 .nearby-btn { background:var(--primary); color:#fff; border:none; border-radius:10px; padding:12px; font-size:15px; cursor:pointer; width:100%; margin-bottom:16px; font-weight:500; }
-.nearby-btn:hover { background:var(--primary-dark); }
 
 /* ---------- Overview & Flights ---------- */
-.overview-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;}
+.overview-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
 
-.flight-row { background: var(--surface-soft); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.flight-row { background: var(--surface-soft); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 .flight-row:last-child { margin-bottom: 0; }
-.flight-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; }
-.flight-head strong { color: var(--primary-dark); font-size: 15px; }
-.flight-head input { border: none; background: transparent; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); text-align: right; }
-.flight-head input::-webkit-calendar-picker-indicator { cursor: pointer; }
-.flight-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-.flight-grid label { display: block; font-size: 11px; color: var(--ink-soft); letter-spacing: .06em; margin-bottom: 2px; }
-.flight-grid input { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 6px; font-size: 13px; background: var(--surface); color: var(--ink); font-family: inherit; }
+.flight-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 15px; flex-wrap:wrap; gap:6px;}
+.flight-head strong { color: var(--primary-dark); font-size: 16px; word-break:break-word;}
+.flight-head input { border: none; background: transparent; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink-soft); text-align: right; padding:4px;}
+.flight-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.flight-grid label { display: block; font-size: 12px; color: var(--ink-soft); letter-spacing: .06em; margin-bottom: 4px; }
+.flight-grid input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px; font-size: 14px; background: var(--surface); color: var(--ink); font-family: inherit; box-sizing:border-box;}
 .flight-grid input.f-time { font-family: 'JetBrains Mono', monospace; }
-.f-status-bar { font-size: 12.5px; padding: 8px 10px; border-radius: 6px; background: #E4DCC9; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.f-status-bar { font-size: 13px; padding: 10px 12px; border-radius: 8px; background: #E4DCC9; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; line-height:1.4;}
 .f-status-bar.warn { background: #FDECC8; color: #9A6C1D; font-weight: 500; }
 .f-status-bar.alert { background: #FADBD8; color: #943126; font-weight: 500; }
 
 footer.note{
-  text-align:center; font-size:11.5px; color:var(--ink-soft); margin-top:20px;
+  text-align:center; font-size:12px; color:var(--ink-soft); margin-top:24px; padding:0 10px; line-height:1.5;
 }
+
+/* 📱 手機版微調 (Max-width: 480px) */
 @media (max-width:480px){
-  .hero h1{font-size:23px;}
-  .expense-form{grid-template-columns:1fr;}
-  .climate-ref{grid-template-columns:1fr 1fr;}
-  .flight-grid { grid-template-columns: 1fr; }
+  .app { padding: 12px 10px 80px; }
+  .hero { padding: 20px 16px 16px; border-radius: 16px; }
+  .hero h1 { font-size: 24px; }
+  .tab { padding: 12px 6px; font-size: 14px; min-width: 50px; }
+  .card { padding: 14px 12px; margin-bottom: 12px; }
+  .expense-form { grid-template-columns: 1fr; }
+  .climate-ref { grid-template-columns: 1fr; } 
+  .flight-grid { grid-template-columns: 1fr; gap:8px; }
+  .weather-temp { font-size: 36px; }
 }
 </style>
 </head>
@@ -364,7 +363,7 @@ footer.note{
   <div class="panel" id="panel-nearby">
     <div class="card">
       <div class="card-head"><h2>📍 尋找附近的行程景點</h2></div>
-      <p style="font-size:13.5px; color:var(--ink-soft); margin-top:0;">系統會根據你的手機定位，計算你與清單中預設景點的距離。（需允許瀏覽器存取位置資訊）</p>
+      <p style="font-size:14px; color:var(--ink-soft); margin-top:0;">系統會根據你的手機定位，計算你與清單中預設景點的距離。（需允許瀏覽器存取位置資訊）</p>
       <button id="getLocationBtn" class="nearby-btn">重新定位並排序距離</button>
       <div id="nearbyResults"></div>
     </div>
@@ -386,12 +385,12 @@ footer.note{
 
     <div class="card">
       <div class="card-head"><h2>💱 匯率換算機</h2></div>
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px;">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:15px;">
         <input type="number" id="calcJpy" placeholder="輸入日幣 ¥" style="flex:1; min-width:100px; padding:10px; border:1px solid var(--border); border-radius:8px;">
         <span>=</span>
         <input type="text" id="calcTwd" placeholder="台幣 NT$" readonly style="flex:1; min-width:100px; padding:10px; border:1px solid transparent; background:var(--surface-soft); border-radius:8px; color:var(--primary-dark); font-weight:600; font-family:'JetBrains Mono',monospace;">
       </div>
-      <p style="font-size:11.5px; color:var(--ink-soft); margin:8px 0 0;">參考匯率：1 JPY = 0.21 TWD</p>
+      <p style="font-size:12px; color:var(--ink-soft); margin:8px 0 0;">參考匯率：1 JPY = 0.21 TWD</p>
     </div>
 
     <div class="card">
@@ -406,11 +405,11 @@ footer.note{
         <input type="text" id="expTitle" class="full" placeholder="項目，例如：小樽壽司午餐">
         
         <div class="full" style="display:flex; gap:8px;">
-          <select id="expCurrency" style="width:110px;">
+          <select id="expCurrency" style="width:120px; flex-shrink:0;">
             <option value="JPY">¥ 日幣</option>
             <option value="TWD">NT$ 台幣</option>
           </select>
-          <input type="text" inputmode="numeric" id="expAmount" placeholder="輸入金額" style="flex:1;">
+          <input type="text" inputmode="numeric" id="expAmount" placeholder="輸入金額" style="flex:1; min-width:0;">
         </div>
 
         <select id="expCategory">
@@ -425,7 +424,7 @@ footer.note{
         <select id="expDay"></select>
         <select id="expPaidBy" class="full"></select>
         <div class="split-row" id="splitRow"></div>
-        <p class="full" id="expError" style="display:none; color:#C0533E; font-size:12.5px; margin:0;"></p>
+        <p class="full" id="expError" style="display:none; color:#C0533E; font-size:13px; margin:0;"></p>
         <button type="button" class="btn-primary" id="addExpenseBtn">加入記帳本</button>
       </div>
     </div>
@@ -433,7 +432,7 @@ footer.note{
     <div class="card">
       <div class="card-head">
         <h2>花費紀錄</h2>
-        <button id="exportCsvBtn" class="add-row-btn" style="width:auto; margin:0; padding:4px 10px; font-size:12px;">📥 匯出 CSV</button>
+        <button id="exportCsvBtn" class="add-row-btn" style="width:auto; margin:0; padding:6px 12px; font-size:13px;">📥 匯出 CSV</button>
       </div>
       <div class="expense-list" id="expenseList"></div>
     </div>
@@ -454,7 +453,7 @@ footer.note{
 
     <div class="card">
       <div class="card-head"><h2>8 月氣候參考</h2></div>
-      <p class="eyebrow" style="margin-bottom:10px;">歷史平均值，僅供打包行李參考，實際天氣以上方即時預報或出發前查詢為準</p>
+      <p class="eyebrow" style="margin-bottom:10px;">歷史平均值，供打包行李參考</p>
       <div class="climate-ref" id="climateRef"></div>
     </div>
 
@@ -487,7 +486,7 @@ footer.note{
       <ul class="tips-list">
         <li>租車自駕請確認國際駕照譯本已備妥，並留意彎道路況。</li>
         <li>熱門餐廳（如：Toriton、達摩烤肉、Suage+）強烈建議避開尖峰或提早抽號碼牌。</li>
-        <li>所有資料會自動儲存在這個瀏覽器裡，下次打開網頁就會看到目前的行程與記帳進度。</li>
+        <li>所有資料會自動儲存在這個手機瀏覽器裡，下次打開網頁就會看到目前的行程與記帳。</li>
       </ul>
     </div>
   </div>
@@ -535,7 +534,6 @@ footer.note{
     95:['⛈️','雷雨'],96:['⛈️','雷雨挾冰雹'],99:['⛈️','強雷雨挾冰雹']
   };
 
-  // 加入你指定的札幌行程景點到 GPS 資料庫
   var PLACES_DB = [
     { name: '函館金森紅磚倉庫 Petite Merveille', lat: 41.7661, lon: 140.7161, desc: '起司蛋糕、紅磚倉庫群' },
     { name: '幸運小丑漢堡 (碼頭末廣店)', lat: 41.7668, lon: 140.7164, desc: '你貼的 Google Maps 地點！' },
@@ -562,7 +560,6 @@ footer.note{
     { name: '辣一番 札幌拉麵', lat: 43.0545, lon: 141.3530, desc: '香辣濃郁拉麵' }
   ];
 
-  // 更新 Day 4 & Day 5 主題
   var DAY_THEMES = [
     {title:'抵達．函館', theme:'city'},
     {title:'函館．大沼公園', theme:'nature'},
@@ -572,7 +569,6 @@ footer.note{
     {title:'札幌．賦歸', theme:'city'}
   ];
 
-  // 更新預設行程
   var DEFAULT_ITEMS = [
     [
       {time:'07:00', place:'桃園起飛，前往函館 (去程)', cat:'transport', note:'虎航 IT236', mapUrl:''},
@@ -644,9 +640,7 @@ footer.note{
   var selectedDay = 0;
   var selectedCity = 'hakodate'; 
   var weatherCache = {};
-  
-  // 為了幫你無痛轉移資料，我們升級到 v6
-  var STORAGE_KEY = 'hokkaido-trip-data-v6'; 
+  var STORAGE_KEY = 'hokkaido-trip-data-v7'; // 升級版本號以防萬一
 
   function defaultState(){
     return {
@@ -681,7 +675,7 @@ footer.note{
   var idCounter = 1;
   function uid(prefix){ idCounter++; return prefix + Date.now().toString(36) + idCounter; }
 
-  /* ---------------- Persistence (含無痛升級邏輯) ---------------- */
+  /* ---------------- Persistence ---------------- */
   async function loadState(){
     try{
       var res = localStorage.getItem(STORAGE_KEY);
@@ -690,20 +684,24 @@ footer.note{
         return parsed;
       }
 
-      // 無痛升級：如果你之前有 v5 的資料，直接繼承過來，並幫你替換掉 Day4 與 Day5 的行程
-      var oldRes = localStorage.getItem('hokkaido-trip-data-v5');
+      // 無痛升級：從 V5 或 V6 轉移過來
+      var oldRes = localStorage.getItem('hokkaido-trip-data-v6') || localStorage.getItem('hokkaido-trip-data-v5');
       if(oldRes) {
         var oldState = JSON.parse(oldRes);
         
-        // 替換 Day 4 (index 3)
+        // 替換 Day 4
         oldState.days[3].title = DAY_THEMES[3].title;
         oldState.days[3].theme = DAY_THEMES[3].theme;
         oldState.days[3].items = DEFAULT_ITEMS[3].map(function(it, j){ return Object.assign({id:'d3-i'+j}, it); });
         
-        // 替換 Day 5 (index 4)
+        // 替換 Day 5
         oldState.days[4].title = DAY_THEMES[4].title;
         oldState.days[4].theme = DAY_THEMES[4].theme;
         oldState.days[4].items = DEFAULT_ITEMS[4].map(function(it, j){ return Object.assign({id:'d4-i'+j}, it); });
+        
+        if(!oldState.shoppingList) {
+          oldState.shoppingList = [ { title: '藥妝店必買', items: [] }, { title: '伴手禮與零食', items: [] } ];
+        }
         
         return oldState;
       }
@@ -887,7 +885,7 @@ footer.note{
           html += '<div class="nearby-info"><h3>' + esc(r.name) + '</h3><p>' + esc(r.desc) + '</p></div>';
           html += '<div style="text-align:right;">';
           html += '<div class="nearby-dist">' + distText + '</div>';
-          html += '<a href="' + gmapsLink + '" target="_blank" class="map-link-btn" style="display:inline-block; margin-top:4px; padding:4px 8px;">導航去 ↗</a>';
+          html += '<a href="' + gmapsLink + '" target="_blank" class="map-link-btn" style="display:inline-block; margin-top:4px; padding:6px 12px; font-size:13px;">導航去 ↗</a>';
           html += '</div></div>';
         });
 
@@ -913,6 +911,7 @@ footer.note{
     state.packingList.forEach(function(cat, cIdx){
       html += '<div class="card">';
       html += '<div class="card-head"><h2>' + esc(cat.category) + '</h2></div>';
+      html += '<div class="table-responsive">';
       html += '<table class="packing-table">';
       html += '<thead><tr><th>物品名稱</th><th class="center" width="60">芝麻</th><th class="center" width="60">阿為</th></tr></thead>';
       html += '<tbody>';
@@ -924,11 +923,11 @@ footer.note{
         html += '</tr>';
       });
       html += '<tr><td colspan="3"><div style="display:flex; gap:8px;">';
-      html += '<input type="text" id="newPackItem_'+cIdx+'" placeholder="輸入想帶的物品..." style="flex:1; border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:13px;">';
-      html += '<button class="add-pack-btn btn-primary" data-cidx="'+cIdx+'" style="margin:0; width:auto; padding:6px 12px; font-size:12px;">新增</button>';
+      html += '<input type="text" id="newPackItem_'+cIdx+'" placeholder="輸入想帶的物品..." style="flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:14px;">';
+      html += '<button class="add-pack-btn btn-primary" data-cidx="'+cIdx+'" style="margin:0; width:auto; padding:8px 16px; font-size:14px;">新增</button>';
       html += '</div></td></tr>';
 
-      html += '</tbody></table></div>';
+      html += '</tbody></table></div></div>';
     });
     el.innerHTML = html;
 
@@ -972,31 +971,31 @@ footer.note{
     
     state.shoppingList.forEach((cat, cIdx) => {
         html += '<div class="card">';
-        html += '<div class="card-head"><h2>' + esc(cat.title) + '</h2><button class="shop-del-cat" data-cidx="'+cIdx+'" style="border:none;background:none;color:var(--ink-soft);opacity:0.6;cursor:pointer;font-size:12px;">刪除大類別</button></div>';
+        html += '<div class="card-head" style="flex-wrap:wrap;"><h2>' + esc(cat.title) + '</h2><button class="shop-del-cat" data-cidx="'+cIdx+'" style="border:none;background:none;color:var(--ink-soft);opacity:0.6;cursor:pointer;font-size:13px;padding:4px;">刪除大類別</button></div>';
         
         if (cat.items.length > 0) {
-          html += '<div style="margin-bottom:12px;">';
+          html += '<div style="margin-bottom:14px;">';
           cat.items.forEach((item, iIdx) => {
-              html += '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:6px;">';
-              html += '<input type="checkbox" class="shop-chk" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" '+(item.checked?'checked':'')+' style="width:18px;height:18px;accent-color:var(--primary); cursor:pointer;">';
-              html += '<span style="flex:1; font-size:14.5px; transition:color 0.2s; '+(item.checked?'text-decoration:line-through;color:var(--ink-soft);':'')+'">' + esc(item.name) + '</span>';
-              html += '<button class="shop-del-item" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" style="border:none;background:none;opacity:0.4;cursor:pointer;font-size:15px;">✕</button>';
+              html += '<div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:8px;">';
+              html += '<input type="checkbox" class="shop-chk" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" '+(item.checked?'checked':'')+' style="width:22px;height:22px;accent-color:var(--primary); cursor:pointer; flex-shrink:0;">';
+              html += '<span style="flex:1; font-size:15px; line-height:1.4; word-break:break-word; transition:color 0.2s; '+(item.checked?'text-decoration:line-through;color:var(--ink-soft);':'')+'">' + esc(item.name) + '</span>';
+              html += '<button class="shop-del-item" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" style="border:none;background:none;opacity:0.4;cursor:pointer;font-size:16px; padding:0 8px; flex-shrink:0;">✕</button>';
               html += '</div>';
           });
           html += '</div>';
         }
 
         html += '<div style="display:flex; gap:8px;">';
-        html += '<input type="text" id="newShopItem_'+cIdx+'" placeholder="新增要買的東西..." style="flex:1; border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-size:13.5px;">';
-        html += '<button class="shop-add-btn btn-primary" data-cidx="'+cIdx+'" style="margin:0; width:auto; padding:6px 14px; font-size:13px;">新增</button>';
+        html += '<input type="text" id="newShopItem_'+cIdx+'" placeholder="新增要買的東西..." style="flex:1; border:1px solid var(--border); border-radius:8px; padding:10px; font-size:14px;">';
+        html += '<button class="shop-add-btn btn-primary" data-cidx="'+cIdx+'" style="margin:0; width:auto; padding:10px 16px; font-size:14px;">新增</button>';
         html += '</div>';
         html += '</div>';
     });
 
     html += '<div class="card" style="background:var(--surface-soft); border-style:dashed;">';
     html += '<div style="display:flex; gap:8px;">';
-    html += '<input type="text" id="newShopCatInput" placeholder="新增大標題 (例：電器、代購)" style="flex:1; border:1px solid var(--border); border-radius:6px; padding:8px 10px; font-size:13.5px;">';
-    html += '<button id="addShopCatBtn" class="btn-primary" style="margin:0; width:auto; padding:8px 14px;">建立分類</button>';
+    html += '<input type="text" id="newShopCatInput" placeholder="新增大標題 (例：電器、代購)" style="flex:1; border:1px solid var(--border); border-radius:8px; padding:10px; font-size:14px;">';
+    html += '<button id="addShopCatBtn" class="btn-primary" style="margin:0; width:auto; padding:10px 14px; font-size:14px;">建立分類</button>';
     html += '</div></div>';
 
     el.innerHTML = html;
@@ -1190,10 +1189,10 @@ footer.note{
     var tnt = Math.round(total * JPY_TO_TWD); 
     
     var summaryGrid = document.getElementById('summaryGrid');
-    var html = '<div class="stat"><div class="label">總花費</div><div class="value mono">¥'+total.toLocaleString()+'<br><span style="font-size:12px;color:var(--ink-soft);font-weight:normal;">約 NT$'+tnt.toLocaleString()+'</span></div></div>';
+    var html = '<div class="stat"><div class="label">總花費</div><div class="value mono">¥'+total.toLocaleString()+'<br><span style="font-size:13px;color:var(--ink-soft);font-weight:normal;">約 NT$'+tnt.toLocaleString()+'</span></div></div>';
     balances.forEach(function(b){
       var bTnt = Math.round(b.paid * JPY_TO_TWD);
-      html += '<div class="stat"><div class="label">'+esc(b.name)+' 已付</div><div class="value mono">¥'+Math.round(b.paid).toLocaleString()+'<br><span style="font-size:12px;color:var(--ink-soft);font-weight:normal;">約 NT$'+bTnt.toLocaleString()+'</span></div></div>';
+      html += '<div class="stat"><div class="label">'+esc(b.name)+' 已付</div><div class="value mono">¥'+Math.round(b.paid).toLocaleString()+'<br><span style="font-size:13px;color:var(--ink-soft);font-weight:normal;">約 NT$'+bTnt.toLocaleString()+'</span></div></div>';
     });
     summaryGrid.innerHTML = html;
 
@@ -1226,9 +1225,9 @@ footer.note{
         
         var amtDisplay = '';
         if (e.rawCurrency === 'TWD') {
-          amtDisplay = '<div class="expense-amt mono">NT$'+e.rawInput.toLocaleString()+'<br><span style="font-size:11px;color:var(--ink-soft);font-weight:normal;">換算 ¥'+e.amount.toLocaleString()+'</span></div>';
+          amtDisplay = '<div class="expense-amt mono">NT$'+e.rawInput.toLocaleString()+'<br><span style="font-size:12px;color:var(--ink-soft);font-weight:normal;">換算 ¥'+e.amount.toLocaleString()+'</span></div>';
         } else {
-          amtDisplay = '<div class="expense-amt mono">¥'+e.amount.toLocaleString()+'<br><span style="font-size:11px;color:var(--ink-soft);font-weight:normal;">約 NT$'+eTnt.toLocaleString()+'</span></div>';
+          amtDisplay = '<div class="expense-amt mono">¥'+e.amount.toLocaleString()+'<br><span style="font-size:12px;color:var(--ink-soft);font-weight:normal;">約 NT$'+eTnt.toLocaleString()+'</span></div>';
         }
 
         return '<div class="expense-row" data-eid="'+e.id+'">'+
@@ -1238,7 +1237,7 @@ footer.note{
             '<div class="expense-sub">DAY '+(e.dayIndex+1)+' · '+cat.label+' · '+esc(payer?payer.name:'')+' 付款 · 分攤：'+esc(among)+'</div>'+
           '</div>'+
           amtDisplay +
-          '<button class="expense-del" style="margin-left:8px;" data-eid="'+e.id+'">✕</button>'+
+          '<button class="expense-del" data-eid="'+e.id+'">✕</button>'+
         '</div>';
       }).join('');
       
@@ -1489,6 +1488,7 @@ footer.note{
   function autoSelectDay() {
     if (!state.startDate) return;
     var start = new Date(state.startDate + 'T00:00:00');
+    // 計算台灣/日本時間基準的差距，直接取設備當地日期
     var today = new Date();
     today.setHours(0,0,0,0);
     var diff = Math.round((today - start) / 86400000);

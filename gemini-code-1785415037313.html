@@ -195,6 +195,51 @@ select.cat-select{
 .pack-del-btn { border:none; background:none; opacity:0.3; cursor:pointer; float:right; font-size:13px; padding:4px; }
 .pack-del-btn:hover { color:var(--rail); opacity:1; }
 
+/* ---------- Shopping ---------- */
+.shop-item-row {
+  display:flex; align-items:flex-start; gap:10px; margin-bottom:10px;
+  border-bottom:1px solid var(--border); padding-bottom:8px;
+}
+.shop-item-main { flex:1; min-width:0; }
+.shop-item-name {
+  display:block; font-size:15px; line-height:1.4; word-break:break-word; transition:color 0.2s;
+}
+.shop-item-img {
+  width:72px; height:72px; object-fit:cover; border-radius:8px;
+  border:1px solid var(--border); background:var(--surface-soft); display:block;
+}
+.shop-image-open {
+  border:none; background:none; padding:0; margin-top:6px; cursor:pointer; display:inline-block;
+}
+.shop-image-open:hover .shop-item-img { border-color:var(--primary); }
+.image-viewer {
+  position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center;
+  background:rgba(29,43,54,.82); padding:22px;
+}
+.image-viewer.active { display:flex; }
+.image-viewer img {
+  max-width:100%; max-height:88vh; object-fit:contain; border-radius:8px;
+  background:var(--surface); box-shadow:0 18px 50px rgba(0,0,0,.35);
+}
+.image-viewer-close {
+  position:absolute; top:14px; right:14px; width:40px; height:40px;
+  border:none; border-radius:50%; background:rgba(255,255,255,.92); color:var(--ink);
+  font-size:24px; line-height:1; cursor:pointer;
+}
+.shop-add-form { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; }
+.shop-add-form input[type="text"] {
+  min-width:0; border:1px solid var(--border); border-radius:8px; padding:10px; font-size:14px;
+}
+.shop-image-field {
+  grid-column:1/-1; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-size:13px; color:var(--ink-soft);
+}
+.shop-image-field input { max-width:100%; }
+@media (max-width:520px){
+  .shop-add-form { grid-template-columns:1fr; }
+  .shop-add-form .btn-primary { width:100%; }
+}
+
 /* ---------- Expenses ---------- */
 .summary-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:6px;}
 .stat{
@@ -611,6 +656,88 @@ footer.note{
   ];
 
   // 更新：寫入使用者指定的完整行李清單
+  DAY_THEMES = [
+    {title:'函館抵達與夜景', theme:'city'},
+    {title:'大沼公園到札幌', theme:'nature'},
+    {title:'札幌神宮與購物', theme:'city'},
+    {title:'小樽一日散策', theme:'nature'},
+    {title:'札幌市區採買', theme:'city'},
+    {title:'新千歲機場返程', theme:'city'}
+  ];
+
+  DEFAULT_ITEMS = [
+    [
+      {time:'07:00', place:'虎航 IT236 TPE -> HKD', cat:'transport', note:'台北桃園 07:00 出發，函館 11:30 抵達。', mapUrl:''},
+      {time:'11:30', place:'函館機場抵達', cat:'transport', note:'抵達後準備搭函館巴士前往湯之川溫泉方向。', mapUrl:''},
+      {time:'12:15', place:'湯倉神社', cat:'sight', note:'機場搭函館巴士／函館巴士到湯之川溫泉；除小人。', mapUrl:''},
+      {time:'13:30', place:'飯店放行李', cat:'lodging', note:'搭巴士前往飯店寄放行李。', mapUrl:''},
+      {time:'14:00', place:'冨士冷菓', cat:'food', note:'飯店前面的冰淇淋。', mapUrl:''},
+      {time:'14:40', place:'幸運小丑漢堡', cat:'food', note:'票選為全日本最好吃；Lucky Cheese Burger（4號）。', mapUrl:''},
+      {time:'15:30', place:'金森紅磚倉庫', cat:'sight', note:'逛倉庫群，可順路買 Petite Merveille。', mapUrl:''},
+      {time:'16:10', place:'日和坂', cat:'sight', note:'函館坡道散步與拍照。', mapUrl:''},
+      {time:'16:35', place:'Angelique Voyage', cat:'food', note:'可麗餅甜點。', mapUrl:''},
+      {time:'17:05', place:'八幡坂', cat:'sight', note:'經典坡道景點。', mapUrl:''},
+      {time:'17:30', place:'世界第二好吃菠蘿麵包', cat:'food', note:'上山前可當點心。', mapUrl:''},
+      {time:'18:15', place:'函館山夜景', cat:'sight', note:'約 18:15 上山，18:20-18:50 看日落，19:00-19:30 魔幻時刻拍夜景。', mapUrl:''},
+      {time:'20:30', place:'函館鹽拉麵 Shinano', cat:'food', note:'22:10 關門，夜景後用餐。', mapUrl:''}
+    ],
+    [
+      {time:'08:00', place:'飯店早餐', cat:'food', note:'先在飯店吃早餐。', mapUrl:''},
+      {time:'09:30', place:'長谷川商店 函館站前店', cat:'food', note:'函館車站附近便利商店，名產是現烤串燒便當。', mapUrl:''},
+      {time:'12:00', place:'函館車站 -> 大沼公園', cat:'transport', note:'約 12 點左右前往；現場買自由座應該即可。', mapUrl:''},
+      {time:'12:45', place:'大沼公園', cat:'sight', note:'抵達後先寄放行李。', mapUrl:''},
+      {time:'13:10', place:'山川牧場 Milk Plant', cat:'food', note:'冰淇淋與乳製品，也可買午餐便當。', mapUrl:''},
+      {time:'13:50', place:'Numa No Ya（沼之家）', cat:'food', note:'大沼公園百年糰子老店。', mapUrl:''},
+      {time:'14:20', place:'活裂燒烏賊', cat:'food', note:'大沼公園周邊小吃。', mapUrl:''},
+      {time:'15:29', place:'北斗號 大沼公園 -> 札幌', cat:'transport', note:'已買票。', mapUrl:''},
+      {time:'18:50', place:'Kamaei 車站魚板', cat:'food', note:'抵達札幌後可買車站魚板。', mapUrl:''},
+      {time:'19:15', place:'札幌車站周邊', cat:'shopping', note:'可以逛一下札幌車站並買吃的。', mapUrl:''},
+      {time:'20:30', place:'達摩成吉思汗烤肉 本店', cat:'food', note:'晚餐。', mapUrl:''},
+      {time:'22:00', place:'薄野車站拍照', cat:'sight', note:'夜間街景拍照。', mapUrl:''}
+    ],
+    [
+      {time:'08:30', place:'RITARU COFFEE', cat:'food', note:'8:30 開門，早餐。', mapUrl:''},
+      {time:'09:45', place:'北海道神宮', cat:'sight', note:'吃冰淇淋跟餅乾，必買梅酒。', mapUrl:''},
+      {time:'11:00', place:'奥芝商店湯咖哩', cat:'food', note:'11:00 開門，建議提早去排隊。神宮附近也有 Toriton，可視狀況調整午餐。', mapUrl:''},
+      {time:'12:45', place:'UNIQLO／GU 札幌東急百貨店', cat:'shopping', note:'買完可先回飯店放。', mapUrl:''},
+      {time:'15:00', place:'札幌工廠', cat:'shopping', note:'購物與散步。', mapUrl:''},
+      {time:'17:30', place:'Toriton 迴轉壽司', cat:'food', note:'可依當天排隊狀況選分店。', mapUrl:''},
+      {time:'19:00', place:'Sports Depo', cat:'shopping', note:'運動用品採買。', mapUrl:''},
+      {time:'21:00', place:'佐藤聖代 Parfait, coffee, liquor, Sato', cat:'food', note:'Daimaru Sapporo store；附近兩間一間到 22:00，一間到 24:00。', mapUrl:''},
+      {time:'', place:'備註', cat:'other', note:'這天感覺會很趕，可依體力刪減札幌工廠、Sports Depo 或甜點。', mapUrl:''}
+    ],
+    [
+      {time:'09:00', place:'札幌 -> 小樽', cat:'transport', note:'可使用 IC 卡。', mapUrl:''},
+      {time:'10:00', place:'朝里車站', cat:'sight', note:'中途可下車看看海邊車站。', mapUrl:''},
+      {time:'11:15', place:'三角市場', cat:'food', note:'小樽海鮮市場。', mapUrl:''},
+      {time:'12:30', place:'小樽運河散步', cat:'sight', note:'沿路走到小樽運河，之後可順著運河走。', mapUrl:''},
+      {time:'13:15', place:'小樽藝術村', cat:'sight', note:'建築與展館。', mapUrl:''},
+      {time:'14:30', place:'小樽堺町通り商店街', cat:'shopping', note:'LeTAO 本店、北菓樓、小樽音樂盒堂、大正硝子館。', mapUrl:''},
+      {time:'16:30', place:'渡海家拉麵', cat:'food', note:'商店街周邊用餐選項。', mapUrl:''},
+      {time:'17:30', place:'小樽運河', cat:'sight', note:'傍晚再回運河看燈。天狗山先取消。', mapUrl:''},
+      {time:'19:00', place:'walkman', cat:'food', note:'20:00 關門，注意抵達時間。', mapUrl:''}
+    ],
+    [
+      {time:'08:30', place:'早餐隨便吃', cat:'food', note:'彈性安排。', mapUrl:''},
+      {time:'09:30', place:'北海道大學', cat:'sight', note:'校園散步。', mapUrl:''},
+      {time:'11:00', place:'飯店放行李', cat:'lodging', note:'先放行李再開始市區採買。', mapUrl:''},
+      {time:'12:00', place:'炸豬排 檍 札幌薄野店', cat:'food', note:'午餐。', mapUrl:''},
+      {time:'13:30', place:'3COINS', cat:'shopping', note:'生活雜貨。', mapUrl:''},
+      {time:'14:15', place:'無印良品', cat:'shopping', note:'採買。', mapUrl:''},
+      {time:'15:00', place:'狸小路', cat:'shopping', note:'逛街、藥妝、業務超市。', mapUrl:''},
+      {time:'15:30', place:'Sorriso dell Orso', cat:'food', note:'義式冰淇淋，15:00 開。', mapUrl:''},
+      {time:'16:15', place:'札幌時計台、大通公園', cat:'sight', note:'市區景點散步。', mapUrl:''},
+      {time:'17:15', place:'Saera 咖啡與三明治店', cat:'food', note:'18:00 關門。', mapUrl:''},
+      {time:'18:00', place:'Donguri Odori 麵包店', cat:'food', note:'買麵包。', mapUrl:''},
+      {time:'18:45', place:'Yuzawaya 丸井今井店', cat:'shopping', note:'買毛線，19:30 關門。', mapUrl:''},
+      {time:'20:30', place:'麵屋雪風 薄野本店', cat:'food', note:'晚餐拉麵。', mapUrl:''}
+    ],
+    [
+      {time:'08:00', place:'飯店早餐', cat:'food', note:'早上吃飯店早餐。', mapUrl:''},
+      {time:'10:00', place:'前往新千歲機場', cat:'transport', note:'約 10:00／10:30 左右出發。', mapUrl:''}
+    ]
+  ];
+
   function getInitPackingList() {
     return [
       {
@@ -671,11 +798,11 @@ footer.note{
   var weatherCache = {};
   
   // 升級版本號 v8，確保載入新版完整行李清單
-  var STORAGE_KEY = 'hokkaido-trip-data-v8'; 
+  var STORAGE_KEY = 'hokkaido-trip-data-new-v1'; 
 
   function defaultState(){
     return {
-      title: '北海道六日行',
+      title: '北海道六日行程',
       startDate: '2026-08-07', 
       members: [
         {id:'m1', name:'芝麻', color:MEMBER_COLORS[0]},
@@ -756,6 +883,72 @@ footer.note{
     return String(s==null?'':s).replace(/[&<>"']/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
+  }
+
+  function readImageFile(file){
+    return new Promise(function(resolve, reject){
+      if(!file) { resolve(''); return; }
+      if(!file.type || file.type.indexOf('image/') !== 0) {
+        reject(new Error('Please choose an image file.'));
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var maxSize = 900;
+          var scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = function(){ reject(new Error('Image read failed.')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error('Image read failed.')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function ensureImageViewer(){
+    var viewer = document.getElementById('imageViewer');
+    if(viewer) return viewer;
+
+    viewer = document.createElement('div');
+    viewer.id = 'imageViewer';
+    viewer.className = 'image-viewer';
+    viewer.innerHTML = '<button type="button" class="image-viewer-close" aria-label="Close image">×</button><img id="imageViewerImg" alt="">';
+    document.body.appendChild(viewer);
+
+    viewer.addEventListener('click', function(e){
+      if(e.target === viewer || e.target.classList.contains('image-viewer-close')) {
+        closeImageViewer();
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeImageViewer();
+    });
+
+    return viewer;
+  }
+
+  function openImageViewer(src, alt){
+    var viewer = ensureImageViewer();
+    var img = document.getElementById('imageViewerImg');
+    img.src = src;
+    img.alt = alt || '';
+    viewer.classList.add('active');
+  }
+
+  function closeImageViewer(){
+    var viewer = document.getElementById('imageViewer');
+    if(!viewer) return;
+    viewer.classList.remove('active');
   }
 
   function getDistanceKm(lat1, lon1, lat2, lon2) {
@@ -1013,18 +1206,26 @@ footer.note{
         if (cat.items.length > 0) {
           html += '<div style="margin-bottom:14px;">';
           cat.items.forEach((item, iIdx) => {
-              html += '<div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:8px;">';
+              html += '<div class="shop-item-row">';
               html += '<input type="checkbox" class="shop-chk" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" '+(item.checked?'checked':'')+' style="width:22px;height:22px;accent-color:var(--primary); cursor:pointer; flex-shrink:0;">';
-              html += '<span style="flex:1; font-size:15px; line-height:1.4; word-break:break-word; transition:color 0.2s; '+(item.checked?'text-decoration:line-through;color:var(--ink-soft);':'')+'">' + esc(item.name) + '</span>';
+              html += '<div class="shop-item-main">';
+              html += '<span class="shop-item-name" style="'+(item.checked?'text-decoration:line-through;color:var(--ink-soft);':'')+'">' + esc(item.name) + '</span>';
+              if(item.image) {
+                html += '<button type="button" class="shop-image-open" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" aria-label="Open image">';
+                html += '<img class="shop-item-img" src="' + esc(item.image) + '" alt="' + esc(item.name) + '">';
+                html += '</button>';
+              }
+              html += '</div>';
               html += '<button class="shop-del-item" data-cidx="'+cIdx+'" data-iidx="'+iIdx+'" style="border:none;background:none;opacity:0.4;cursor:pointer;font-size:16px; padding:0 8px; flex-shrink:0;">✕</button>';
               html += '</div>';
           });
           html += '</div>';
         }
 
-        html += '<div style="display:flex; gap:8px;">';
-        html += '<input type="text" id="newShopItem_'+cIdx+'" placeholder="新增要買的東西..." style="flex:1; border:1px solid var(--border); border-radius:8px; padding:10px; font-size:14px;">';
+        html += '<div class="shop-add-form">';
+        html += '<input type="text" id="newShopItem_'+cIdx+'" placeholder="新增要買的東西...">';
         html += '<button class="shop-add-btn btn-primary" data-cidx="'+cIdx+'" style="margin:0; width:auto; padding:10px 16px; font-size:14px;">新增</button>';
+        html += '<label class="shop-image-field">對應圖片 <input type="file" id="newShopImage_'+cIdx+'" accept="image/*"></label>';
         html += '</div>';
         html += '</div>';
     });
@@ -1043,6 +1244,15 @@ footer.note{
         var iIdx = parseInt(chk.getAttribute('data-iidx'), 10);
         state.shoppingList[cIdx].items[iIdx].checked = chk.checked;
         saveState(); renderShopping();
+      });
+    });
+
+    el.querySelectorAll('.shop-image-open').forEach(btn => {
+      btn.addEventListener('click', function(){
+        var cIdx = parseInt(btn.getAttribute('data-cidx'), 10);
+        var iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+        var item = state.shoppingList[cIdx] && state.shoppingList[cIdx].items[iIdx];
+        if(item && item.image) openImageViewer(item.image, item.name);
       });
     });
 
@@ -1066,13 +1276,21 @@ footer.note{
     });
 
     el.querySelectorAll('.shop-add-btn').forEach(btn => {
-      btn.addEventListener('click', function(){
+      btn.addEventListener('click', async function(){
         var cIdx = parseInt(btn.getAttribute('data-cidx'), 10);
         var inputEl = document.getElementById('newShopItem_' + cIdx);
+        var imageEl = document.getElementById('newShopImage_' + cIdx);
         var name = inputEl.value.trim();
         if(name) {
-          state.shoppingList[cIdx].items.push({ name: name, checked: false });
-          saveState(); renderShopping();
+          btn.disabled = true;
+          try {
+            var image = await readImageFile(imageEl && imageEl.files ? imageEl.files[0] : null);
+            state.shoppingList[cIdx].items.push({ name: name, image: image, checked: false });
+            saveState(); renderShopping();
+          } catch(err) {
+            alert(err.message || '圖片上傳失敗');
+            btn.disabled = false;
+          }
         }
       });
     });
